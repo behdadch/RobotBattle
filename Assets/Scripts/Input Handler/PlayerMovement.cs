@@ -20,11 +20,7 @@ public class PlayerMovement : Controller {
 
         /***** ROTATION/AIMING *****/
         float mouseRot = Input.GetAxis("Mouse X");
-
         mouseRot *= Time.fixedDeltaTime * rotationSpeed;
-
-        transform.Rotate(transform.up, mouseRot);
-
 
         /***** LINEAR MOVEMENT *****/
         // move
@@ -53,17 +49,41 @@ public class PlayerMovement : Controller {
 
 
         //check for jumping
-        if (Physics.Raycast(transform.position, Vector3.down, 0.5f) && vertSpeed < 0.1f && Input.GetButton("Jump")) {
+        //the transform is at the character's feet, so only check 5cm below to see if we're on the ground
+        if (Physics.Raycast(transform.position, Vector3.down, 0.05f) && vertSpeed < 0.1f && Input.GetButton("Jump")) {
             vertSpeed = jumpSpeed;
         }
 
+        Vector3 velocity = new Vector3();
+
         if (motion.sqrMagnitude > 0.01f) {
-            rigidBody.velocity = transform.rotation * motion + new Vector3(0, vertSpeed, 0);
+            velocity = transform.rotation * motion + new Vector3(0, vertSpeed, 0);
         }
         else {
-            rigidBody.velocity = new Vector3(rigidBody.velocity.x, vertSpeed, rigidBody.velocity.z);
+            velocity = new Vector3(rigidBody.velocity.x, vertSpeed, rigidBody.velocity.z);
         }
 
+        //send to server
+        CmdPhysicsUpdate(velocity, mouseRot);
+        //prediction
+        rigidBody.velocity = velocity;
+        transform.Rotate(transform.up, mouseRot);
+    }
+
+    [Mirror.Command]
+    private void CmdPhysicsUpdate(Vector3 velocity, float rotation) {
+        rigidBody.velocity = velocity;
+        transform.Rotate(transform.up, rotation);
+        //tell the other clients
+        RpcPhysicsUpdate(velocity, rotation);
+    }
+    
+    [Mirror.ClientRpc]
+    private void RpcPhysicsUpdate(Vector3 velocity, float rotation) {
+        if (!isLocalPlayer) {
+            rigidBody.velocity = velocity;
+            transform.Rotate(transform.up, rotation);
+        }
     }
 
 }

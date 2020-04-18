@@ -2,6 +2,8 @@
 <Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <LangVersion>latest</LangVersion>
+    <CscToolPath>C:\Program Files\Unity\Hub\Editor\2019.3.9f1\Editor\Data\Tools\RoslynScripts</CscToolPath>
+    <CscToolExe>unity_csc.bat</CscToolExe>
   </PropertyGroup>
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -52,9 +54,6 @@
     <UnityVersion>2019.3.9f1</UnityVersion>
   </PropertyGroup>
   <ItemGroup>
-    <Analyzer Include="C:\Program Files (x86)\Microsoft Visual Studio Tools for Unity\16.0\Analyzers\Microsoft.Unity.Analyzers.dll" />
-  </ItemGroup>
-  <ItemGroup>
     <Reference Include="UnityEngine">
       <HintPath>C:\Program Files\Unity\Hub\Editor\2019.3.9f1\Editor\Data\Managed/UnityEngine/UnityEngine.dll</HintPath>
     </Reference>
@@ -63,11 +62,17 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Assets\Scripts\Combat\Projectile.cs" />
+    <Compile Include="Assets\Scripts\Combat\Weapon.cs" />
     <Compile Include="Assets\Scripts\FollowCamera.cs" />
     <Compile Include="Assets\Scripts\Input Handler\AIMovement.cs" />
     <Compile Include="Assets\Scripts\Input Handler\Controller.cs" />
     <Compile Include="Assets\Scripts\Input Handler\PlayerMovement.cs" />
+    <Compile Include="Assets\Scripts\Properties\Energy.cs" />
+    <Compile Include="Assets\Scripts\Properties\Health.cs" />
     <Compile Include="Assets\Scripts\Robot.cs" />
+    <Compile Include="Assets\Scripts\UI\MasterUI.cs" />
+    <Compile Include="Assets\Scripts\UI\SliderPanelUI.cs" />
     <None Include="Assets\ScriptTemplates\51-Mirror__Network Authenticator-NewNetworkAuthenticator.cs.txt" />
     <None Include="Assets\ScriptTemplates\53-Mirror__Network Observer-NewNetworkObserver.cs.txt" />
     <None Include="Assets\ScriptTemplates\56-Mirror__Network Discovery-NewNetworkDiscovery.cs.txt" />
@@ -79,31 +84,31 @@
     <None Include="Assets\ScriptTemplates\50-Mirror__Network Manager-NewNetworkManager.cs.txt" />
     <None Include="Assets\ScriptTemplates\54-Mirror__Network Room Manager-NewNetworkRoomManager.cs.txt" />
     <Reference Include="Unity.Timeline.Editor">
-      <HintPath>C:/Users/Logan/Documents/GitHub/RobotBattle/Library/ScriptAssemblies/Unity.Timeline.Editor.dll</HintPath>
+      <HintPath>C:/Users/giant/Documents/GitHub/RobotBattle/Library/ScriptAssemblies/Unity.Timeline.Editor.dll</HintPath>
     </Reference>
     <Reference Include="Unity.VSCode.Editor">
-      <HintPath>C:/Users/Logan/Documents/GitHub/RobotBattle/Library/ScriptAssemblies/Unity.VSCode.Editor.dll</HintPath>
+      <HintPath>C:/Users/giant/Documents/GitHub/RobotBattle/Library/ScriptAssemblies/Unity.VSCode.Editor.dll</HintPath>
     </Reference>
     <Reference Include="Unity.TextMeshPro.Editor">
-      <HintPath>C:/Users/Logan/Documents/GitHub/RobotBattle/Library/ScriptAssemblies/Unity.TextMeshPro.Editor.dll</HintPath>
+      <HintPath>C:/Users/giant/Documents/GitHub/RobotBattle/Library/ScriptAssemblies/Unity.TextMeshPro.Editor.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.UI">
-      <HintPath>C:/Users/Logan/Documents/GitHub/RobotBattle/Library/ScriptAssemblies/UnityEngine.UI.dll</HintPath>
+      <HintPath>C:/Users/giant/Documents/GitHub/RobotBattle/Library/ScriptAssemblies/UnityEngine.UI.dll</HintPath>
     </Reference>
     <Reference Include="Unity.Timeline">
-      <HintPath>C:/Users/Logan/Documents/GitHub/RobotBattle/Library/ScriptAssemblies/Unity.Timeline.dll</HintPath>
+      <HintPath>C:/Users/giant/Documents/GitHub/RobotBattle/Library/ScriptAssemblies/Unity.Timeline.dll</HintPath>
     </Reference>
     <Reference Include="Unity.CollabProxy.Editor">
-      <HintPath>C:/Users/Logan/Documents/GitHub/RobotBattle/Library/ScriptAssemblies/Unity.CollabProxy.Editor.dll</HintPath>
+      <HintPath>C:/Users/giant/Documents/GitHub/RobotBattle/Library/ScriptAssemblies/Unity.CollabProxy.Editor.dll</HintPath>
     </Reference>
     <Reference Include="Unity.Rider.Editor">
-      <HintPath>C:/Users/Logan/Documents/GitHub/RobotBattle/Library/ScriptAssemblies/Unity.Rider.Editor.dll</HintPath>
+      <HintPath>C:/Users/giant/Documents/GitHub/RobotBattle/Library/ScriptAssemblies/Unity.Rider.Editor.dll</HintPath>
     </Reference>
     <Reference Include="Unity.TextMeshPro">
-      <HintPath>C:/Users/Logan/Documents/GitHub/RobotBattle/Library/ScriptAssemblies/Unity.TextMeshPro.dll</HintPath>
+      <HintPath>C:/Users/giant/Documents/GitHub/RobotBattle/Library/ScriptAssemblies/Unity.TextMeshPro.dll</HintPath>
     </Reference>
     <Reference Include="UnityEditor.UI">
-      <HintPath>C:/Users/Logan/Documents/GitHub/RobotBattle/Library/ScriptAssemblies/UnityEditor.UI.dll</HintPath>
+      <HintPath>C:/Users/giant/Documents/GitHub/RobotBattle/Library/ScriptAssemblies/UnityEditor.UI.dll</HintPath>
     </Reference>
     <Reference Include="UnityEngine.AIModule">
       <HintPath>C:/Program Files/Unity/Hub/Editor/2019.3.9f1/Editor/Data/Managed/UnityEngine/UnityEngine.AIModule.dll</HintPath>
@@ -283,16 +288,16 @@
       <HintPath>C:/Program Files/Unity/Hub/Editor/2019.3.9f1/Editor/Data/Managed/UnityEngine/UnityEngine.XRModule.dll</HintPath>
     </Reference>
     <Reference Include="Mono.CecilX">
-      <HintPath>C:/Users/Logan/Documents/GitHub/RobotBattle/Assets/Mirror/Plugins/Mono.Cecil/Mono.CecilX.dll</HintPath>
+      <HintPath>C:/Users/giant/Documents/GitHub/RobotBattle/Assets/Mirror/Plugins/Mono.Cecil/Mono.CecilX.dll</HintPath>
     </Reference>
     <Reference Include="Mono.CecilX.Mdb">
-      <HintPath>C:/Users/Logan/Documents/GitHub/RobotBattle/Assets/Mirror/Plugins/Mono.Cecil/Mono.CecilX.Mdb.dll</HintPath>
+      <HintPath>C:/Users/giant/Documents/GitHub/RobotBattle/Assets/Mirror/Plugins/Mono.Cecil/Mono.CecilX.Mdb.dll</HintPath>
     </Reference>
     <Reference Include="Mono.CecilX.Pdb">
-      <HintPath>C:/Users/Logan/Documents/GitHub/RobotBattle/Assets/Mirror/Plugins/Mono.Cecil/Mono.CecilX.Pdb.dll</HintPath>
+      <HintPath>C:/Users/giant/Documents/GitHub/RobotBattle/Assets/Mirror/Plugins/Mono.Cecil/Mono.CecilX.Pdb.dll</HintPath>
     </Reference>
     <Reference Include="Mono.CecilX.Rocks">
-      <HintPath>C:/Users/Logan/Documents/GitHub/RobotBattle/Assets/Mirror/Plugins/Mono.Cecil/Mono.CecilX.Rocks.dll</HintPath>
+      <HintPath>C:/Users/giant/Documents/GitHub/RobotBattle/Assets/Mirror/Plugins/Mono.Cecil/Mono.CecilX.Rocks.dll</HintPath>
     </Reference>
     <Reference Include="netstandard">
       <HintPath>C:/Program Files/Unity/Hub/Editor/2019.3.9f1/Editor/Data/NetStandard/ref/2.0.0/netstandard.dll</HintPath>
