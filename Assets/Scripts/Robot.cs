@@ -4,45 +4,59 @@ using UnityEngine;
 using UnityEngine.AI;
 
 
+[RequireComponent(typeof(Controller))]
 public class Robot : Mirror.NetworkBehaviour {
 
     [Header("Components")]
-    public NavMeshAgent agent;
-    public Animator animator;
+    private Animator animator;
+    private Rigidbody rigidBody;
 
     [Header("Movement")]
-    public float moveSpeed = 5;
-    public float rotationSpeed = 100;
+    private Controller controller; //controller (AI or human)
 
-//    [Header("Firing")]
-//    public KeyCode shootKey = KeyCode.Space;
-//    public GameObject projectilePrefab;
-//    public Transform projectileMount;
+    //    [Header("Firing")]
+    //    public KeyCode shootKey = KeyCode.Space;
+    //    public GameObject projectilePrefab;
+    //    public Transform projectileMount;
 
 
-    // Start is called before the first frame update
-    void Start()
-    {
-        
+    private void Awake() {
+        controller = GetComponent<Controller>();
+
+        animator = GetComponent<Animator>();
+        rigidBody = GetComponent<Rigidbody>();
+
+    }
+
+    private void Start() {
+        if (isLocalPlayer) {
+            Camera.main.GetComponent<FollowCamera>().target = this.transform;
+        }
     }
 
     // Update is called once per frame
     void Update() {
-        // movement for local player
-        if (!isLocalPlayer)
+
+        // actions (like shooting, charging, etc)
+        if (isLocalPlayer) {
+            // process input for actions
+        }
+
+        UpdateAnimator();
+    }
+
+    private void FixedUpdate() {
+        // movement for local player (and other physics)
+        if (!isLocalPlayer) {
             return;
+        }
 
-        // rotate
-        float horizontal = Input.GetAxis("Horizontal");
-        transform.Rotate(0, horizontal * rotationSpeed * Time.deltaTime, 0);
+        controller.HandleMovement();
+    }
 
-        // move
-        float vertical = Input.GetAxis("Vertical");
-        Vector3 forward = transform.TransformDirection(Vector3.forward);
-        agent.velocity = forward * Mathf.Max(vertical, 0) * agent.speed;
-        animator.SetBool("Moving", agent.velocity != Vector3.zero);
 
-        // actions
-        
+    //updates the animator with current robot state
+    private void UpdateAnimator() {
+        animator.SetFloat("Speed", rigidBody.velocity.magnitude);
     }
 }
