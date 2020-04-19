@@ -10,6 +10,7 @@ public class FollowCamera : MonoBehaviour {
     public Vector3 lead = new Vector3(0, 0, 5);
 
     public float timeConstant = 3;
+    public float rotTimeConstant = 3;
 
     private float defaultLength;
 
@@ -29,8 +30,6 @@ public class FollowCamera : MonoBehaviour {
             FollowTarget();
         }
 
-        //TODO: put in game master somewhere
-        Cursor.lockState = CursorLockMode.Confined;
 
     }
 
@@ -48,7 +47,10 @@ public class FollowCamera : MonoBehaviour {
 
         transform.position = Vector3.Lerp(transform.position, targetPosition, timeConstant * Time.deltaTime);
         //track 
-        transform.LookAt(target.transform.position + target.transform.forward * 5f);
+        Vector3 targetLook = target.transform.position + target.transform.forward * 5f;
+        Vector3 currentLook = transform.rotation * Vector3.forward + transform.position;
+
+        transform.LookAt(Vector3.Lerp(currentLook, targetLook, rotTimeConstant * Time.deltaTime));
     }
 
     private void FPSControls() {

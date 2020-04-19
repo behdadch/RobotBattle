@@ -1427,7 +1427,6 @@ namespace Mirror
             // Only call AddPlayer for normal scene changes, not additive load/unload
             if (clientSceneOperation == SceneOperation.Normal && autoCreatePlayer && ClientScene.localPlayer == null)
             {
-                Debug.Log("Client added to scene!!!!");
                 // add player if existing one is null
                 ClientScene.AddPlayer();
             }

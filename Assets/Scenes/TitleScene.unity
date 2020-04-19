@@ -150,7 +150,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 948269871e33b874caf68493e671ab42, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  PlayerName: 
+  PlayerName: Surge-Bot
 --- !u!4 &4915125
 Transform:
   m_ObjectHideFlags: 0
@@ -1056,7 +1056,6 @@ GameObject:
   - component: {fileID: 409244609}
   - component: {fileID: 409244608}
   - component: {fileID: 409244607}
-  - component: {fileID: 409244606}
   m_Layer: 0
   m_Name: NetworkManager
   m_TagString: Untagged
@@ -1064,18 +1063,6 @@ GameObject:
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
   m_IsActive: 1
---- !u!114 &409244606
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 409244605}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 195827649d26c694faeddc04fd652e25, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
 --- !u!114 &409244607
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -1154,7 +1141,7 @@ MonoBehaviour:
   networkAddress: localhost
   maxConnections: 4
   authenticator: {fileID: 0}
-  playerPrefab: {fileID: 7985269494768794180, guid: 650c5231bcdd62b499f1f92b7031b063,
+  playerPrefab: {fileID: 4213663867457030671, guid: b26f4f5b55af75447b12ac4b0e56a278,
     type: 3}
   autoCreatePlayer: 1
   playerSpawnMethod: 1
@@ -2313,7 +2300,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 987441049}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0, y: 1, z: 0}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_Children: []
   m_Father: {fileID: 0}

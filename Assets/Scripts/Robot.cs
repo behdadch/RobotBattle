@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.AI;
-
+using UnityEngine.SceneManagement;
 
 [RequireComponent(typeof(Controller))]
 [RequireComponent(typeof(Health))]
@@ -14,9 +14,10 @@ public class Robot : Mirror.NetworkBehaviour
     private float health = 100;
     [Mirror.SyncVar]
     private float energy = 100;
-
+    [Mirror.SyncVar]
     public float energyDecayRate = 0.5f;
-
+    [Mirror.SyncVar]
+    public bool inControl = true;
 
     public void AddEnergy(float qty)
     {
@@ -62,12 +63,18 @@ public class Robot : Mirror.NetworkBehaviour
         weapon = GetComponent<Weapon>();
     }
 
-    private void Start() {
 
-        if (Camera.main.GetComponent<FollowCamera>() == null) {
-            CmdDie();
-            return;
-        }
+    public void AllowControl(bool val) {
+        CmdControl(val);
+        Debug.Log("requesting control to be " + val);
+    }
+
+    [Mirror.Command]
+    private void CmdControl(bool val) {
+        inControl = val;
+    }
+
+    private void Start() {
 
         health = GetComponent<Health>().maxHealth;
         energy = GetComponent<Energy>().maxEnergy;
@@ -78,9 +85,6 @@ public class Robot : Mirror.NetworkBehaviour
             aimSprite = aimTarget.GetComponentInChildren<SpriteRenderer>();
 
             MasterUI.instance.SetPlayer(this);
-
-            // TODO: put in the game master script
-            Cursor.visible = false;
         }
         else
         {
@@ -126,7 +130,7 @@ public class Robot : Mirror.NetworkBehaviour
         }
 
         // actions (like shooting, charging, etc)
-        if (isLocalPlayer)
+        if (isLocalPlayer && inControl)
         {
 
             // process input for actions
@@ -198,7 +202,7 @@ public class Robot : Mirror.NetworkBehaviour
     private void FixedUpdate()
     {
         // movement for local player (and other physics)
-        if (!isLocalPlayer)
+        if (!isLocalPlayer || !inControl)
         {
             return;
         }
@@ -235,6 +239,20 @@ public class Robot : Mirror.NetworkBehaviour
     public float PercentEnergy()
     {
         return energy / GetComponent<Energy>().maxEnergy;
+    }
+
+
+    public void Disconnect() {
+        Debug.Log("Disconnect hit!");
+        if (Mirror.NetworkServer.active && Mirror.NetworkClient.isConnected) {
+            Mirror.NetworkManager.singleton.StopHost();
+        } else if (Mirror.NetworkClient.isConnected) {
+            Mirror.NetworkManager.singleton.StopClient();
+        } else {
+            //I'm not sure why this is happening
+        }
+        DestroyImmediate(Mirror.NetworkManager.singleton.gameObject);
+        SceneManager.LoadScene(0);
     }
 
 }

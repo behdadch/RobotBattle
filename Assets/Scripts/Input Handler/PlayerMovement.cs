@@ -73,26 +73,27 @@ public class PlayerMovement : Controller {
             velocity = new Vector3(rigidBody.velocity.x, vertSpeed, rigidBody.velocity.z);
         }
 
-        //send to server
-        CmdPhysicsUpdate(velocity, mouseRot);
-        //prediction
+        //motion prediction
         rigidBody.velocity = velocity;
         transform.Rotate(transform.up, mouseRot);
+        //send to server
+        CmdPhysicsUpdate(velocity, mouseRot);
+
     }
 
     [Mirror.Command]
     private void CmdPhysicsUpdate(Vector3 velocity, float rotation) {
         rigidBody.velocity = velocity;
         transform.Rotate(transform.up, rotation);
-        //tell the other clients
+        //tell the clients to update -- NOTE: this should be handled by the networked transform?
         RpcPhysicsUpdate(velocity, rotation);
     }
     
     [Mirror.ClientRpc]
     private void RpcPhysicsUpdate(Vector3 velocity, float rotation) {
+        //update rigidbody info on clients
         if (!isLocalPlayer) {
             rigidBody.velocity = velocity;
-            transform.Rotate(transform.up, rotation);
         }
     }
 
