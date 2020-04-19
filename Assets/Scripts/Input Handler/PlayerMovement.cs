@@ -10,10 +10,20 @@ public class PlayerMovement : Controller {
     public float rotationSpeed = 200;
     public float jumpSpeed = 1;
 
+
+    [SerializeField] private float zoomSpeed = 20f;
+
     private Rigidbody rigidBody;
 
     private void Awake() {
         rigidBody = GetComponent<Rigidbody>();
+    }
+
+    private void Update() {
+        if (isLocalPlayer) {
+            float zoom = Input.mouseScrollDelta.y * zoomSpeed * Time.deltaTime;
+            Camera.main.GetComponent<FollowCamera>().ZoomIn(zoom);
+        }
     }
 
     public override void HandleMovement() {
