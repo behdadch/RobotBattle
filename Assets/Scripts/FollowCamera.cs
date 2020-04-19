@@ -11,6 +11,14 @@ public class FollowCamera : MonoBehaviour {
 
     public float timeConstant = 3;
 
+    private float defaultLength;
+
+    public float minLength = 1;
+    public float maxLength = 5;
+
+    private void Awake() {
+        defaultLength = boom.magnitude;
+    }
 
     // LateUpdate is called once per frame after Update
     void LateUpdate() {
@@ -26,10 +34,18 @@ public class FollowCamera : MonoBehaviour {
 
     }
 
+    public void ZoomIn(float qty) {
+        float newLength = boom.magnitude + qty;
+
+        newLength = Mathf.Clamp(newLength, minLength, maxLength);
+
+        boom = boom.normalized * newLength;
+    }
 
     private void FollowTarget() {
-        //track position
+        //update the camera position
         Vector3 targetPosition = target.transform.position + target.transform.rotation * boom;
+
         transform.position = Vector3.Lerp(transform.position, targetPosition, timeConstant * Time.deltaTime);
         //track 
         transform.LookAt(target.transform.position + target.transform.forward * 5f);

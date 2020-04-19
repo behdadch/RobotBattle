@@ -43,7 +43,6 @@ public class Robot : Mirror.NetworkBehaviour
     [SerializeField] private float maxAim = 2f;
     [SerializeField] private float minAim = -2f;
     [SerializeField] private float maxRange = 100;
-
     //health and energy
     private bool dead = false;
 
@@ -94,12 +93,29 @@ public class Robot : Mirror.NetworkBehaviour
         }
     }
 
+    [Mirror.Command]
+    void CmdDie() {
+        dead = true;
+        health = 0;
+        Destroy(this.gameObject);
+    }
+
     // Update is called once per frame
     void Update()
     {
 
         if (dead) return;
 
+        if (isLocalPlayer || isServer) {
+            energy -= energyDecayRate * Time.deltaTime;
+            if (energy <= 0) {
+                if (isLocalPlayer) {
+                    CmdDie();
+                } else {
+                    Damage(health);
+                }
+            }
+        }
 
         // actions (like shooting, charging, etc)
         if (isLocalPlayer)
@@ -147,7 +163,6 @@ public class Robot : Mirror.NetworkBehaviour
         {
             sightline.Normalize();
             sightline *= (hitInfo.distance - 0.01f);
-            aimTarget.position = origin + sightline;
             //stick to the wall
             aimTarget.LookAt(aimTarget.transform.position + hitInfo.normal);
             //change color if it's an enemy
@@ -160,8 +175,15 @@ public class Robot : Mirror.NetworkBehaviour
         {
             sightline.Normalize();
             sightline *= maxRange;
-            aimTarget.position = origin + sightline;
         }
+
+        aimTarget.position = origin + sightline;
+        CmdAim(origin + sightline);
+    }
+
+    [Mirror.Command]
+    private void CmdAim(Vector3 target) {
+        aimTarget.position = target;
     }
 
 

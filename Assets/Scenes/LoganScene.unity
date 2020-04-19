@@ -1420,6 +1420,8 @@ MonoBehaviour:
   boom: {x: 0.5, y: 3, z: -4}
   lead: {x: 0, y: 0, z: 5}
   timeConstant: 10
+  minLength: 3
+  maxLength: 10
 --- !u!1 &966572862
 GameObject:
   m_ObjectHideFlags: 0
@@ -1565,11 +1567,11 @@ RectTransform:
   m_Father: {fileID: 256136251}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
-  m_AnchorMin: {x: 0.5, y: 0.5}
-  m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 211.5, y: 85.7}
-  m_SizeDelta: {x: 189.8, y: 68.6}
-  m_Pivot: {x: 0.5, y: 0.5}
+  m_AnchorMin: {x: 1, y: 1}
+  m_AnchorMax: {x: 1, y: 1}
+  m_AnchoredPosition: {x: -10, y: -10}
+  m_SizeDelta: {x: 189.79999, y: 68.600006}
+  m_Pivot: {x: 1, y: 1}
 --- !u!114 &1458076633
 MonoBehaviour:
   m_ObjectHideFlags: 0
