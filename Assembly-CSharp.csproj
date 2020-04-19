@@ -58,6 +58,7 @@
      <Compile Include="Assets\Scripts\Properties\Energy.cs" />
      <Compile Include="Assets\Scripts\Properties\Health.cs" />
      <Compile Include="Assets\Scripts\Robot.cs" />
+     <Compile Include="Assets\Scripts\RotationScript.cs" />
      <Compile Include="Assets\Scripts\UI\LobbyHostUI.cs" />
      <Compile Include="Assets\Scripts\UI\MasterUI.cs" />
      <Compile Include="Assets\Scripts\UI\NameSelect.cs" />
