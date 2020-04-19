@@ -15,6 +15,9 @@ public class Robot : Mirror.NetworkBehaviour
     [Mirror.SyncVar]
     private float energy = 100;
 
+    public float energyDecayRate = 0.5f;
+
+
     public void AddEnergy(float qty)
     {
         energy = Mathf.Max(qty + energy, 100);
