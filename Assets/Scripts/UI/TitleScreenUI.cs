@@ -1,13 +1,17 @@
 ﻿using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 
 public class TitleScreenUI : MonoBehaviour {
 
     public RectTransform mainButtons;
+    public RectTransform multiplayer;
     public RectTransform optionsMenu;
     public RectTransform credits;
+
+    public Text ipField;
 
     RectTransform currentScreen;
 
@@ -16,29 +20,46 @@ public class TitleScreenUI : MonoBehaviour {
     }
 
     public void SinglePlayer() {
-
+        SceneManager.LoadScene("LoganScene");
     }
 
     public void Multiplayer() {
+        StartCoroutine("TweenOut", currentScreen);
+        currentScreen = multiplayer;
+        StartCoroutine("TweenIn", currentScreen);
+    }
+
+    public void HostGame() {
+        Mirror.NetworkManager.singleton.StartHost();
+    }
+
+    public void JoinGame() {
+        string ip = ipField.text;
+        if (ip.Length == 0) {
+            ip = "localhost";
+        }
+
+        Mirror.NetworkManager.singleton.networkAddress = ip;
+        Mirror.NetworkManager.singleton.StartClient();
 
     }
 
     public void Options() {
-        StartCoroutine("TweenIn", optionsMenu);
         StartCoroutine("TweenOut", currentScreen);
         currentScreen = optionsMenu;
+        StartCoroutine("TweenIn", currentScreen);
     }
 
     public void Credits() {
-        StartCoroutine("TweenIn", credits);
         StartCoroutine("TweenOut", currentScreen);
         currentScreen = credits;
+        StartCoroutine("TweenIn", currentScreen);
     }
 
     public void MainMenu() {
-        StartCoroutine("TweenIn", mainButtons);
         StartCoroutine("TweenOut", currentScreen);
         currentScreen = mainButtons;
+        StartCoroutine("TweenIn", currentScreen);
     }
 
     IEnumerator TweenIn(RectTransform target) {

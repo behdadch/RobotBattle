@@ -69,10 +69,14 @@
     <Compile Include="Assets\Scripts\Input Handler\AIMovement.cs" />
     <Compile Include="Assets\Scripts\Input Handler\Controller.cs" />
     <Compile Include="Assets\Scripts\Input Handler\PlayerMovement.cs" />
+    <Compile Include="Assets\Scripts\Multiplayer\LobbyManager.cs" />
+    <Compile Include="Assets\Scripts\Multiplayer\LocalPlayerData.cs" />
     <Compile Include="Assets\Scripts\Properties\Energy.cs" />
     <Compile Include="Assets\Scripts\Properties\Health.cs" />
     <Compile Include="Assets\Scripts\Robot.cs" />
+    <Compile Include="Assets\Scripts\UI\LobbyHostUI.cs" />
     <Compile Include="Assets\Scripts\UI\MasterUI.cs" />
+    <Compile Include="Assets\Scripts\UI\NameSelect.cs" />
     <Compile Include="Assets\Scripts\UI\SliderPanelUI.cs" />
     <Compile Include="Assets\Scripts\UI\TitleScreenUI.cs" />
     <None Include="Assets\ScriptTemplates\51-Mirror__Network Authenticator-NewNetworkAuthenticator.cs.txt" />

@@ -55,6 +55,12 @@ public class Robot : Mirror.NetworkBehaviour {
     }
 
     private void Start() {
+
+        if (Camera.main.GetComponent<FollowCamera>() == null) {
+            CmdDie();
+            return;
+        }
+
         health = GetComponent<Health>().maxHealth;
         energy = GetComponent<Energy>().maxEnergy;
         if (isLocalPlayer) {

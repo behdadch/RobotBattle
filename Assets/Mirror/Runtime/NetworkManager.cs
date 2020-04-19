@@ -1420,12 +1420,14 @@ namespace Mirror
         /// <param name="conn">The network connection that the scene change message arrived on.</param>
         public virtual void OnClientSceneChanged(NetworkConnection conn)
         {
+
             // always become ready.
             if (!ClientScene.ready) ClientScene.Ready(conn);
 
             // Only call AddPlayer for normal scene changes, not additive load/unload
             if (clientSceneOperation == SceneOperation.Normal && autoCreatePlayer && ClientScene.localPlayer == null)
             {
+                Debug.Log("Client added to scene!!!!");
                 // add player if existing one is null
                 ClientScene.AddPlayer();
             }
