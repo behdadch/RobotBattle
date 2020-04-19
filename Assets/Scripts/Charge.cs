@@ -5,15 +5,23 @@ using UnityEngine;
 public class Charge : MonoBehaviour
 {
 
-    bool charging = false;
+    bool charging;
     private Robot robot;
+
+    Animator animator;
+
+    void Start(){
+        animator = GetComponent<Animator>();
+        charging = false;
+    }
 
     void OnTriggerEnter(Collider col)
     {
         if (col.gameObject.tag == "Player" && charging == false)
         {
             robot = col.GetComponent<Robot>();
-            charging = true;
+            charging = true; //to only let one robot charges at a time
+            LightControl("InUse");
         }
 
     }
@@ -23,6 +31,7 @@ public class Charge : MonoBehaviour
         if (col.GetComponent<Robot>() == robot)
         {
             charging = false;
+            LightControl("Exit");
         }
     }
     void Update()
@@ -30,11 +39,15 @@ public class Charge : MonoBehaviour
         if (charging == true && robot!= null)
         {
             float extraEnergy =  5 * Time.deltaTime;
-             Debug.Log(extraEnergy);
+            Debug.Log(extraEnergy);
             robot.AddEnergy(extraEnergy);
         }
     }
+    void LightControl(string status){
+        animator.SetTrigger(status);
+    }
     void Broken(){
+        animator.SetBool("IsBroken", true); 
     //TODO
 }
 }
