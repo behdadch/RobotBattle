@@ -24,7 +24,12 @@ public class Doors : MonoBehaviour
         }
     }
     void OnTriggerExit(Collider col){
-        count--;
+        
+        Debug.Log(count);
+        if (col.gameObject.tag == "Player"){
+            count--;
+        }
+
         if(doorOpen && count==0){
             doorOpen = false;
             DoorControl("Close");

@@ -7,14 +7,18 @@ using UnityEngine.AI;
 [RequireComponent(typeof(Controller))]
 [RequireComponent(typeof(Health))]
 [RequireComponent(typeof(Energy))]
-public class Robot : Mirror.NetworkBehaviour {
+public class Robot : Mirror.NetworkBehaviour
+{
 
     [Mirror.SyncVar]
     private float health = 100;
     [Mirror.SyncVar]
     private float energy = 100;
-    [SerializeField]
-    private float energyDecayRate = 0.5f;
+
+    public void AddEnergy(float qty)
+    {
+        energy = Mathf.Max(qty + energy, 100);
+    }
 
     [Header("Components")]
     private Animator animator;
@@ -45,7 +49,8 @@ public class Robot : Mirror.NetworkBehaviour {
     private Weapon weapon;
 
 
-    private void Awake() {
+    private void Awake()
+    {
         controller = GetComponent<Controller>();
 
         animator = GetComponent<Animator>();
@@ -63,7 +68,8 @@ public class Robot : Mirror.NetworkBehaviour {
 
         health = GetComponent<Health>().maxHealth;
         energy = GetComponent<Energy>().maxEnergy;
-        if (isLocalPlayer) {
+        if (isLocalPlayer)
+        {
             Camera.main.GetComponent<FollowCamera>().target = this;
             originalAimPos = aimTarget.localPosition;
             aimSprite = aimTarget.GetComponentInChildren<SpriteRenderer>();
@@ -73,20 +79,23 @@ public class Robot : Mirror.NetworkBehaviour {
             // TODO: put in the game master script
             Cursor.visible = false;
         }
-        else {
+        else
+        {
             aimTarget.gameObject.SetActive(false);
         }
     }
 
     [Mirror.Server]
-    public void Damage(float dmg) {
+    public void Damage(float dmg)
+    {
         health -= dmg;
-        if (health <= 0) {
+        if (health <= 0)
+        {
             health = 0;
             dead = true;
             //TODO: play some sounds, instantiate some particles, create a ragdoll/dead body object
             Destroy(this.gameObject);
-            }
+        }
     }
 
     [Mirror.Command]
@@ -97,7 +106,8 @@ public class Robot : Mirror.NetworkBehaviour {
     }
 
     // Update is called once per frame
-    void Update() {
+    void Update()
+    {
 
         if (dead) return;
 
@@ -113,28 +123,29 @@ public class Robot : Mirror.NetworkBehaviour {
         }
 
         // actions (like shooting, charging, etc)
-        if (isLocalPlayer) {
-
-           
+        if (isLocalPlayer)
+        {
 
             // process input for actions
             Aim();
 
             //shooting
-            if (Input.GetMouseButtonDown(0)) {
+            if (Input.GetMouseButtonDown(0))
+            {
                 CmdFire();
             }
 
         }
-        
+
         //play everywhere
         Animation();
 
     }
 
-    private void Aim() {
+    private void Aim()
+    {
         // use vertical mouse axis to aim up and down
-        verticalAim += Input.GetAxis("Mouse Y")*Time.deltaTime*verticalSensitivity;
+        verticalAim += Input.GetAxis("Mouse Y") * Time.deltaTime * verticalSensitivity;
         verticalAim = Mathf.Clamp(verticalAim, minAim, maxAim);
 
 
@@ -151,18 +162,22 @@ public class Robot : Mirror.NetworkBehaviour {
         aimTarget.position = aimTarget.position + new Vector3(0, verticalAim, 0);
 
         Vector3 sightline = aimTarget.position - origin;
-        
+
         //check for a hit
-        if (Physics.Raycast(origin, sightline, out hitInfo, maxRange)) {
+        if (Physics.Raycast(origin, sightline, out hitInfo, maxRange))
+        {
             sightline.Normalize();
             sightline *= (hitInfo.distance - 0.01f);
             //stick to the wall
             aimTarget.LookAt(aimTarget.transform.position + hitInfo.normal);
             //change color if it's an enemy
-            if (hitInfo.collider.gameObject.GetComponent<Robot>() != null) {
+            if (hitInfo.collider.gameObject.GetComponent<Robot>() != null)
+            {
                 aimSprite.color = Color.red;
             }
-        } else {
+        }
+        else
+        {
             sightline.Normalize();
             sightline *= maxRange;
         }
@@ -175,23 +190,27 @@ public class Robot : Mirror.NetworkBehaviour {
     private void CmdAim(Vector3 target) {
         aimTarget.position = target;
     }
-    
 
-    private void FixedUpdate() {
+
+    private void FixedUpdate()
+    {
         // movement for local player (and other physics)
-        if (!isLocalPlayer) {
+        if (!isLocalPlayer)
+        {
             return;
         }
 
         controller.HandleMovement();
     }
-    
-    void Animation() {
+
+    void Animation()
+    {
         animator.SetFloat("Speed", rigidBody.velocity.magnitude);
     }
 
     [Mirror.Command]
-    public void CmdFire() {
+    public void CmdFire()
+    {
         GameObject projectile = Instantiate(weapon.projectilePrefab, weapon.projectileMount.position, transform.rotation);
         projectile.transform.LookAt(weapon.targetReticle);
         Mirror.NetworkServer.Spawn(projectile);
@@ -200,15 +219,18 @@ public class Robot : Mirror.NetworkBehaviour {
 
     // animation update
     [Mirror.ClientRpc]
-    void RpcOnFire() {
+    void RpcOnFire()
+    {
         animator.SetTrigger("Shoot");
     }
 
-    public float PercentHealth() {
+    public float PercentHealth()
+    {
         return health / GetComponent<Health>().maxHealth;
     }
 
-    public float PercentEnergy() {
+    public float PercentEnergy()
+    {
         return energy / GetComponent<Energy>().maxEnergy;
     }
 
