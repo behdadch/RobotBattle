@@ -15,6 +15,8 @@ public class TitleScreenUI : MonoBehaviour {
 
     public GameObject robotPrefab;
 
+    public Vector3 screenCenter;
+
     RectTransform currentScreen;
 
     private void Start() {
@@ -23,7 +25,7 @@ public class TitleScreenUI : MonoBehaviour {
 
     public void SinglePlayer() {
         Mirror.NetworkManager.singleton.StartHost();
-        Mirror.NetworkManager.singleton.onlineScene = "LoganScene";
+        Mirror.NetworkManager.singleton.onlineScene = "GameScene";
         Mirror.NetworkManager.singleton.autoCreatePlayer = true;
         Mirror.NetworkManager.singleton.playerPrefab = robotPrefab;
         Mirror.NetworkManager.singleton.StartHost();
@@ -71,7 +73,7 @@ public class TitleScreenUI : MonoBehaviour {
 
     IEnumerator TweenIn(RectTransform target) {
         for (float ft = 0; ft <= 1; ft += Time.deltaTime) {
-            target.localPosition = Vector3.Lerp(target.localPosition, Vector3.zero, ft);
+            target.localPosition = Vector3.Lerp(target.localPosition, screenCenter, ft);
             yield return null;
         }
     }

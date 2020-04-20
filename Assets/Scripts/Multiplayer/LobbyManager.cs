@@ -35,8 +35,8 @@ public class LobbyManager : Mirror.NetworkBehaviour {
         manager.playerPrefab = robot;
         manager.autoCreatePlayer = true;
         RpcClientStart();
-        manager.ServerChangeScene("LoganScene");
-        manager.onlineScene = "LoganScene";
+        manager.ServerChangeScene("GameScene");
+        manager.onlineScene = "GameScene";
     }
 
 

@@ -20,9 +20,16 @@ public class Resource : MonoBehaviour
             if(Random.Range(0.0f,1.0f)>spawnProb){
                 continue;
             }
-            GameObject go = Instantiate(objectsToSpawned) as GameObject;
-            go.transform.position = trans.position; 
-            spawnedObjects.Add(go);   
+
+            RaycastHit hitInfo;
+            if (Physics.Raycast(trans.position, Vector3.down, out hitInfo, 10)) {
+                GameObject go = Instantiate(objectsToSpawned) as GameObject;
+                go.transform.position = hitInfo.point;
+                spawnedObjects.Add(go);
+            }
+
+         //   go.transform.position = trans.position; 
+          //  spawnedObjects.Add(go);   
         }
     }
 

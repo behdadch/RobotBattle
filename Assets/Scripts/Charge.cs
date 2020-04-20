@@ -10,6 +10,8 @@ public class Charge : MonoBehaviour
 
     Animator animator;
 
+    bool broken = false;
+
     void Start(){
         animator = GetComponent<Animator>();
         charging = false;
@@ -36,7 +38,7 @@ public class Charge : MonoBehaviour
     }
     void Update()
     {
-        if (charging == true && robot!= null)
+        if (!broken && charging == true && robot!= null)
         {
             float extraEnergy =  5 * Time.deltaTime;
             Debug.Log(extraEnergy);
@@ -47,7 +49,8 @@ public class Charge : MonoBehaviour
         animator.SetTrigger(status);
     }
     public void Broken(){
-        animator.SetBool("isBroken", true); 
+        broken = true;
+        animator.SetBool("isBroken", broken); 
     //TODO
 }
 }

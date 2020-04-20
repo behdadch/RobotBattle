@@ -19,6 +19,7 @@ public class Robot : Mirror.NetworkBehaviour
     [Mirror.SyncVar]
     public bool inControl = true;
     
+    [Mirror.ServerCallback]
     public void AddHealth(float qty){
         health = Mathf.Max(qty + health,100);
     }
@@ -31,6 +32,7 @@ public class Robot : Mirror.NetworkBehaviour
 
     public bool isAI = false;
 
+    [Mirror.ServerCallback]
     public void AddEnergy(float qty)
     {
         energy = Mathf.Max(qty + energy, 100);

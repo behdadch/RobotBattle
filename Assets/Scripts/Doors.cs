@@ -5,7 +5,7 @@ using UnityEngine;
 public class Doors : MonoBehaviour
 {
     Animator animator;
-    bool doorOpen;
+    [SerializeField] bool doorOpen;
     int count;
     void Start()
     {
