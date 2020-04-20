@@ -48,6 +48,20 @@ public class FollowCamera : MonoBehaviour {
         Vector3 targetPosition = target.transform.position + target.transform.rotation * boom;
 
         transform.position = Vector3.Lerp(transform.position, targetPosition, timeConstant * Time.deltaTime);
+
+        //check if a wall is in the way
+        Vector3 origin = target.transform.position;
+        origin.y = transform.position.y;
+        Vector3 view = origin - transform.position; //negative view (from source);
+
+        RaycastHit hitData;
+        if (Physics.Raycast(origin, view, out hitData, view.magnitude)) {
+            if (hitData.collider.gameObject != target) {
+         //       transform.position = hitData.point;
+            }
+            Debug.Log("Cam raycast hit!");
+        }
+
         //track 
         Vector3 targetLook = target.transform.position + target.transform.forward * 5f;
         Vector3 currentLook = transform.rotation * Vector3.forward + transform.position;
