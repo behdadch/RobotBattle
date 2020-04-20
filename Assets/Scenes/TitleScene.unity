@@ -1548,6 +1548,7 @@ MonoBehaviour:
   optionsMenu: {fileID: 0}
   credits: {fileID: 0}
   ipField: {fileID: 0}
+  robotPrefab: {fileID: 0}
 --- !u!114 &661507222
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2816,6 +2817,7 @@ MonoBehaviour:
   optionsMenu: {fileID: 0}
   credits: {fileID: 0}
   ipField: {fileID: 0}
+  robotPrefab: {fileID: 0}
 --- !u!114 &1218685541
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3205,6 +3207,7 @@ MonoBehaviour:
   optionsMenu: {fileID: 0}
   credits: {fileID: 0}
   ipField: {fileID: 0}
+  robotPrefab: {fileID: 0}
 --- !u!1 &1434040091
 GameObject:
   m_ObjectHideFlags: 0
@@ -4101,6 +4104,8 @@ MonoBehaviour:
   optionsMenu: {fileID: 1218685539}
   credits: {fileID: 474340602}
   ipField: {fileID: 1942503423}
+  robotPrefab: {fileID: 7985269494768794180, guid: 650c5231bcdd62b499f1f92b7031b063,
+    type: 3}
 --- !u!114 &1938378433
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -4629,7 +4634,7 @@ MonoBehaviour:
     m_HorizontalOverflow: 0
     m_VerticalOverflow: 0
     m_LineSpacing: 1
-  m_Text: Single Player
+  m_Text: Play
 --- !u!222 &2020592747
 CanvasRenderer:
   m_ObjectHideFlags: 0

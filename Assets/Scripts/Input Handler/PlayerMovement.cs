@@ -15,8 +15,33 @@ public class PlayerMovement : Controller {
 
     private Rigidbody rigidBody;
 
+
+    private float verticalAim;
+    
+    private Vector3 originalAimPos;
+    private SpriteRenderer aimSprite;
+    [SerializeField] private float verticalSensitivity = 10;
+
+
+    [Header("Stats")]
+    [SerializeField] private float maxAim = 2f;
+    [SerializeField] private float minAim = -2f;
+    [SerializeField] private float maxRange = 100;
+
+
     private void Awake() {
         rigidBody = GetComponent<Rigidbody>();
+
+    }
+
+    private void Start() {
+        if (isLocalPlayer) {
+            originalAimPos = aimTarget.localPosition;
+            aimSprite = aimTarget.GetComponentInChildren<SpriteRenderer>();
+
+        } else {
+            aimTarget.gameObject.SetActive(false);
+        }
     }
 
     private void Update() {
@@ -80,6 +105,48 @@ public class PlayerMovement : Controller {
         CmdPhysicsUpdate(velocity, mouseRot);
 
     }
+
+
+
+    public override void Aim() {
+        // use vertical mouse axis to aim up and down
+        verticalAim += Input.GetAxis("Mouse Y") * Time.deltaTime * verticalSensitivity;
+        verticalAim = Mathf.Clamp(verticalAim, minAim, maxAim);
+
+
+        //reset aim target position and color
+        aimTarget.localPosition = originalAimPos;
+        aimTarget.localRotation = Quaternion.identity;
+        aimSprite.color = Color.white;
+
+        //raycast out and look for a hit
+        RaycastHit hitInfo;
+        Vector3 origin = transform.position;
+        origin.y = aimTarget.position.y;
+
+        aimTarget.position = aimTarget.position + new Vector3(0, verticalAim, 0);
+
+        Vector3 sightline = aimTarget.position - origin;
+
+        //check for a hit
+        if (Physics.Raycast(origin, sightline, out hitInfo, maxRange)) {
+            sightline.Normalize();
+            sightline *= (hitInfo.distance - 0.01f);
+            //stick to the wall
+            aimTarget.LookAt(aimTarget.transform.position + hitInfo.normal);
+            //change color if it's an enemy
+            if (hitInfo.collider.gameObject.GetComponent<Robot>() != null) {
+                aimSprite.color = Color.red;
+            }
+        } else {
+            sightline.Normalize();
+            sightline *= maxRange;
+        }
+
+        aimTarget.position = origin + sightline;
+        CmdAim(origin + sightline);
+    }
+
 
     [Mirror.Command]
     private void CmdPhysicsUpdate(Vector3 velocity, float rotation) {

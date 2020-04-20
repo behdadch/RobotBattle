@@ -12,9 +12,13 @@ public class MasterUI : MonoBehaviour {
 
     public Button exitButton;
 
+    public Text topText;
+
     Robot player;
 
     bool hidden = false;
+
+    List<GameObject> playersLeft;
 
     private void Awake() {
         if (instance == null) {
@@ -36,6 +40,25 @@ public class MasterUI : MonoBehaviour {
                 Hide();
             }
         }
+        if (playersLeft != null) {
+            for (int i = playersLeft.Count - 1; i >= 0; i--) {
+                if (playersLeft[i] == null) {
+                    playersLeft.RemoveAt(i);
+                }
+            }
+            if (playersLeft.Count > 1) {
+                topText.text = playersLeft.Count + " REMAIN!";
+            }
+            else {
+                if (player == null) {
+                    topText.text = "LIFE TERMINATED";
+                } else {
+                    topText.text = "LIFE MAINTAINED";
+                }
+            }
+        } else {
+            topText.text = "Waiting to begin...";
+        }
     }
 
 
@@ -55,7 +78,7 @@ public class MasterUI : MonoBehaviour {
         }
         hidden = true;
         Cursor.visible = false;
-        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.lockState = CursorLockMode.Confined;
         exitButton.gameObject.SetActive(false);
     }
 
@@ -63,5 +86,6 @@ public class MasterUI : MonoBehaviour {
         this.player = player;
         sliders.player = player;
         exitButton.onClick.AddListener(player.Disconnect);
+        playersLeft = new List<GameObject>(GameObject.FindGameObjectsWithTag("Player"));
     }
 }

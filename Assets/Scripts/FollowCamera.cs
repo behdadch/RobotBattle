@@ -9,6 +9,8 @@ public class FollowCamera : MonoBehaviour {
     public Vector3 boom = new Vector3(0.2f, 0.8f, -1.4f);
     public Vector3 lead = new Vector3(0, 0, 5);
 
+    public float speed = 15f;
+
     public float timeConstant = 3;
     public float rotTimeConstant = 3;
 
@@ -54,6 +56,11 @@ public class FollowCamera : MonoBehaviour {
     }
 
     private void FPSControls() {
+        Vector3 motion = Input.GetAxisRaw("Horizontal") * transform.right 
+                       - Input.GetAxisRaw("Vertical") * transform.forward
+                       + Input.mouseScrollDelta.y * transform.up * 5f;
+        
+        transform.position += transform.rotation * motion.normalized * speed * Time.deltaTime; ;
 
     }
 

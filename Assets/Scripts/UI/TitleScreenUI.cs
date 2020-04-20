@@ -13,6 +13,8 @@ public class TitleScreenUI : MonoBehaviour {
 
     public Text ipField;
 
+    public GameObject robotPrefab;
+
     RectTransform currentScreen;
 
     private void Start() {
@@ -20,7 +22,12 @@ public class TitleScreenUI : MonoBehaviour {
     }
 
     public void SinglePlayer() {
-        SceneManager.LoadScene("LoganScene");
+        Mirror.NetworkManager.singleton.StartHost();
+        Mirror.NetworkManager.singleton.onlineScene = "LoganScene";
+        Mirror.NetworkManager.singleton.autoCreatePlayer = true;
+        Mirror.NetworkManager.singleton.playerPrefab = robotPrefab;
+        Mirror.NetworkManager.singleton.StartHost();
+        //SceneManager.LoadScene("LoganScene");
     }
 
     public void Multiplayer() {

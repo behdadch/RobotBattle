@@ -2997,11 +2997,7 @@ MonoBehaviour:
   syncMode: 0
   syncInterval: 0.1
   energyDecayRate: 0.5
-  aimTarget: {fileID: 215306706470511177}
-  verticalSensitivity: 10
-  maxAim: 2
-  minAim: -2
-  maxRange: 100
+  inControl: 1
 --- !u!114 &2416522491573252385
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -3016,10 +3012,15 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   syncMode: 0
   syncInterval: 0.1
+  aimTarget: {fileID: 215306706470511177}
   moveSpeed: 5
   rotationSpeed: 200
   jumpSpeed: 5
   zoomSpeed: 20
+  verticalSensitivity: 10
+  maxAim: 2
+  minAim: -2
+  maxRange: 100
 --- !u!54 &3753004277674477822
 Rigidbody:
   m_ObjectHideFlags: 0

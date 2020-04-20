@@ -22,6 +22,15 @@ public class Robot : Mirror.NetworkBehaviour
     public void AddHealth(float qty){
         health = Mathf.Max(qty + health,100);
     }
+
+    [Mirror.SyncVar]
+    public float weaponCooldown = 0.5f;
+
+    [Mirror.SyncVar]
+    private float cdTime = 0f;
+
+    public bool isAI = false;
+
     public void AddEnergy(float qty)
     {
         energy = Mathf.Max(qty + energy, 100);
@@ -39,17 +48,7 @@ public class Robot : Mirror.NetworkBehaviour
     //    public GameObject projectilePrefab;
     //    public Transform projectileMount;
 
-    public Transform aimTarget;
-    private Vector3 originalAimPos;
-    private SpriteRenderer aimSprite;
-    private float verticalAim;
-    [SerializeField] private float verticalSensitivity = 10;
-
-
-    [Header("Stats")]
-    [SerializeField] private float maxAim = 2f;
-    [SerializeField] private float minAim = -2f;
-    [SerializeField] private float maxRange = 100;
+    
     //health and energy
     private bool dead = false;
 
@@ -81,17 +80,13 @@ public class Robot : Mirror.NetworkBehaviour
 
         health = GetComponent<Health>().maxHealth;
         energy = GetComponent<Energy>().maxEnergy;
-        if (isLocalPlayer)
+        if (isLocalPlayer && !isAI)
         {
             Camera.main.GetComponent<FollowCamera>().target = this;
-            originalAimPos = aimTarget.localPosition;
-            aimSprite = aimTarget.GetComponentInChildren<SpriteRenderer>();
-
             MasterUI.instance.SetPlayer(this);
         }
-        else
-        {
-            aimTarget.gameObject.SetActive(false);
+        else {
+            weapon.targetReticle.GetComponentInChildren<SpriteRenderer>().enabled = false;
         }
     }
 
@@ -121,30 +116,36 @@ public class Robot : Mirror.NetworkBehaviour
 
         if (dead) return;
 
-        if (isLocalPlayer || isServer) {
-            energy -= energyDecayRate * Time.deltaTime;
-            if (energy <= 0) {
-                if (isLocalPlayer) {
-                    CmdDie();
-                } else {
-                    Damage(health);
-                }
-            }
+        if (isLocalPlayer && !isAI) {
+            CmdUpdate();
+        }
+        if (isServer && isAI) {
+            SrvUpdate();
         }
 
         // actions (like shooting, charging, etc)
-        if (isLocalPlayer && inControl)
-        {
-
+        if (( (isLocalPlayer && !isAI) || (isServer && isAI)) && inControl) {
             // process input for actions
-            Aim();
-
+            controller.Aim();
             //shooting
-            if (Input.GetMouseButtonDown(0))
-            {
+            if (isLocalPlayer && Input.GetMouseButtonDown(0) && !isAI) {
                 CmdFire();
             }
+            else if (isServer && isAI) {
+                Vector3 target = weapon.targetReticle.position;
+                Collider[] others = Physics.OverlapSphere(target, 0.2f);
+                bool seeEnemy = false;
 
+                foreach (Collider c in others) {
+                    if (c.CompareTag("Player")) {
+                        seeEnemy = true; break;
+                    }
+                }
+
+                if (weapon.targetReticle && seeEnemy) {
+                    SrvFire();
+                }
+            }
         }
 
         //play everywhere
@@ -152,65 +153,32 @@ public class Robot : Mirror.NetworkBehaviour
 
     }
 
-    private void Aim()
-    {
-        // use vertical mouse axis to aim up and down
-        verticalAim += Input.GetAxis("Mouse Y") * Time.deltaTime * verticalSensitivity;
-        verticalAim = Mathf.Clamp(verticalAim, minAim, maxAim);
+    [Mirror.Command]
+    private void CmdUpdate() => SrvUpdate();
 
-
-        //reset aim target position and color
-        aimTarget.localPosition = originalAimPos;
-        aimTarget.localRotation = Quaternion.identity;
-        aimSprite.color = Color.white;
-
-        //raycast out and look for a hit
-        RaycastHit hitInfo;
-        Vector3 origin = transform.position;
-        origin.y = aimTarget.position.y;
-
-        aimTarget.position = aimTarget.position + new Vector3(0, verticalAim, 0);
-
-        Vector3 sightline = aimTarget.position - origin;
-
-        //check for a hit
-        if (Physics.Raycast(origin, sightline, out hitInfo, maxRange))
-        {
-            sightline.Normalize();
-            sightline *= (hitInfo.distance - 0.01f);
-            //stick to the wall
-            aimTarget.LookAt(aimTarget.transform.position + hitInfo.normal);
-            //change color if it's an enemy
-            if (hitInfo.collider.gameObject.GetComponent<Robot>() != null)
-            {
-                aimSprite.color = Color.red;
+    [Mirror.Server]
+    private void SrvUpdate() {
+        cdTime -= Time.deltaTime;
+        energy -= energyDecayRate * Time.deltaTime;
+        cdTime = Mathf.Max(cdTime, 0);
+        if (energy <= 0) {
+            if (isLocalPlayer) {
+                CmdDie();
+            } else {
+                Damage(health);
             }
         }
-        else
-        {
-            sightline.Normalize();
-            sightline *= maxRange;
-        }
-
-        aimTarget.position = origin + sightline;
-        CmdAim(origin + sightline);
-    }
-
-    [Mirror.Command]
-    private void CmdAim(Vector3 target) {
-        aimTarget.position = target;
     }
 
 
     private void FixedUpdate()
     {
         // movement for local player (and other physics)
-        if (!isLocalPlayer || !inControl)
-        {
-            return;
+        if ((isLocalPlayer && inControl) || (isServer && isAI && inControl)) {
+            controller.HandleMovement();
         }
 
-        controller.HandleMovement();
+        
     }
 
     void Animation()
@@ -218,14 +186,20 @@ public class Robot : Mirror.NetworkBehaviour
         animator.SetFloat("Speed", rigidBody.velocity.magnitude);
     }
 
-    [Mirror.Command]
-    public void CmdFire()
-    {
+    [Mirror.Server]
+    public void SrvFire() {
+        if (cdTime > 0) {
+            return;
+        }
         GameObject projectile = Instantiate(weapon.projectilePrefab, weapon.projectileMount.position, transform.rotation);
         projectile.transform.LookAt(weapon.targetReticle);
         Mirror.NetworkServer.Spawn(projectile);
+        cdTime = weaponCooldown;
         RpcOnFire();
     }
+
+    [Mirror.Command]
+    public void CmdFire() => SrvFire();
 
     // animation update
     [Mirror.ClientRpc]
