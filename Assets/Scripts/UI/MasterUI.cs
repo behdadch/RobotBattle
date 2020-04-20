@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.UI;
-
+using UnityEngine.SceneManagement;
 
 public class MasterUI : MonoBehaviour {
 
@@ -85,7 +85,14 @@ public class MasterUI : MonoBehaviour {
     public void SetPlayer(Robot player) {
         this.player = player;
         sliders.player = player;
-        exitButton.onClick.AddListener(player.Disconnect);
         playersLeft = new List<GameObject>(GameObject.FindGameObjectsWithTag("Player"));
+    }
+
+    public void Exit() {
+        if (player != null) {
+            player.Disconnect();
+        } else {
+            SceneManager.LoadScene(0);
+        }
     }
 }

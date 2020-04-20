@@ -47,20 +47,10 @@ public class FollowCamera : MonoBehaviour {
         //update the camera position
         Vector3 targetPosition = target.transform.position + target.transform.rotation * boom;
 
-        transform.position = Vector3.Lerp(transform.position, targetPosition, timeConstant * Time.deltaTime);
+        
 
-        //check if a wall is in the way
-        Vector3 origin = target.transform.position;
-        origin.y = transform.position.y;
-        Vector3 view = origin - transform.position; //negative view (from source);
-
-        RaycastHit hitData;
-        if (Physics.Raycast(origin, view, out hitData, view.magnitude)) {
-            if (hitData.collider.gameObject != target) {
-         //       transform.position = hitData.point;
-            }
-            Debug.Log("Cam raycast hit!");
-        }
+        //check for collisions
+        occludeRay(targetPosition);
 
         //track 
         Vector3 targetLook = target.transform.position + target.transform.forward * 5f;
@@ -68,6 +58,23 @@ public class FollowCamera : MonoBehaviour {
 
         transform.LookAt(Vector3.Lerp(currentLook, targetLook, rotTimeConstant * Time.deltaTime));
     }
+
+    void occludeRay(Vector3 targetPosition) {
+        //declare a new raycast hit.
+        RaycastHit wallHit = new RaycastHit();
+        float smooth = 1;
+        //linecast from your player (targetFollow) to your cameras mask (camMask) to find collisions.
+        if (Physics.Linecast(target.transform.position, targetPosition, out wallHit)) {
+            Debug.Log("Occlusion!");
+            //the x and z coordinates are pushed away from the wall by hit.normal.
+            //the y coordinate stays the same.
+            targetPosition = new Vector3(wallHit.point.x + wallHit.normal.x * 0.5f, targetPosition.y, wallHit.point.z + wallHit.normal.z * 0.5f);
+            smooth = 10;
+        }
+
+        transform.position = Vector3.Lerp(transform.position, targetPosition, timeConstant * smooth * Time.deltaTime);
+    }
+
 
     private void FPSControls() {
         Vector3 motion = Input.GetAxisRaw("Horizontal") * transform.right 
