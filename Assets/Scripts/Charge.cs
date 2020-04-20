@@ -46,8 +46,8 @@ public class Charge : MonoBehaviour
     void LightControl(string status){
         animator.SetTrigger(status);
     }
-    void Broken(){
-        animator.SetBool("IsBroken", true); 
+    public void Broken(){
+        animator.SetBool("isBroken", true); 
     //TODO
 }
 }

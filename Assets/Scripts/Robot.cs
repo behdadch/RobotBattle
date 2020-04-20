@@ -18,7 +18,10 @@ public class Robot : Mirror.NetworkBehaviour
     public float energyDecayRate = 0.5f;
     [Mirror.SyncVar]
     public bool inControl = true;
-
+    
+    public void AddHealth(float qty){
+        health = Mathf.Max(qty + health,100);
+    }
     public void AddEnergy(float qty)
     {
         energy = Mathf.Max(qty + energy, 100);
